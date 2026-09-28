@@ -1,39 +1,38 @@
-# Chirpy Starter
+# lukita.me
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Blog do Lukita: um dev mobile entediado usando IA para aprender coisas fora da minha área. Engenharia de software, produto e IA aplicada, com os números na mesa. Todo post sai em português e em inglês.
 
-A minimal, ready-to-use template for creating a blog with the [**Chirpy**][chirpy] Jekyll theme. Get up and running in minutes with all critical files pre-configured.
+*Lukita's blog: a bored mobile dev using AI to learn things outside my field. Every post comes out in Portuguese and English.*
 
-## Why This Starter Exists
+## Rodando local
 
-When installing Chirpy through [RubyGems.org][gem], Jekyll can only read a subset of theme files (`_data`, `_layouts`, `_includes`, `_sass`, `assets`) and limited `_config.yml` options from the gem. As a result, users cannot enjoy the full out-of-the-box experience that Chirpy offers.
-
-To unlock all features, the following files must be present in your Jekyll site:
+Precisa de Ruby 3.3+ e Bundler.
 
 ```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+bundle install
+bundle exec jekyll serve --livereload          # http://127.0.0.1:4000
+bundle exec jekyll serve --unpublished --future # inclui rascunhos (published: false)
 ```
 
-This starter bundles those files from the latest **Chirpy** release along with a [CD][CD] workflow, so you can start writing immediately.
+## Estrutura
 
-## Usage
+| Onde | O quê |
+|---|---|
+| `_posts/` | Posts em pares: `AAAA-MM-DD-slug.md` (pt) e `AAAA-MM-DD-slug-en.md` (en), cada um com `lang:` e link para o outro |
+| `_tabs/about.md` | Página Sobre, em pt e en na mesma página |
+| `_layouts/home.html` | Home do Chirpy com filtro de idioma (bandeiras); a escolha fica salva e, sem escolha, segue o idioma do navegador |
+| `_includes/grafico-*.html` | Gráficos SVG dos posts, com tema claro e escuro |
+| `_includes/newsletter.html` | Formulário de inscrição (Kit) no fim dos posts |
+| `assets/css/jekyll-theme-chirpy.scss` | Ajustes visuais sobre o Chirpy (paleta zinc, tabelas, gráficos, filtro, newsletter) |
+| `tools/newsletter.py` | Agenda no Kit um e-mail para cada post novo |
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+## Deploy e newsletter
 
-## Contributing
+- **Build and Deploy** (`.github/workflows/pages-deploy.yml`): a cada push na `main`, gera o site e publica no GitHub Pages.
+- **Newsletter** (`.github/workflows/newsletter.yml`): depois de um deploy bem-sucedido, procura posts publicados que ainda não estão em `_data/newsletter_enviados.yml`, agenda o e-mail no [Kit](https://kit.com) (plano grátis, até 10 mil inscritos) para 10 minutos depois e registra o slug. Posts em pt vão para quem se inscreveu pelo formulário pt, os demais para o en. Trava em 2 posts por vez e, rodando à mão, começa em modo ensaio.
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
+Configuração: ids dos formulários e segmentos em `newsletter:` no `_config.yml` e a chave da API no secret `KIT_API_KEY`.
 
-## License
+## Créditos
 
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+Tema [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy), licença MIT (veja `LICENSE`). Os textos e imagens dos posts são do autor.
