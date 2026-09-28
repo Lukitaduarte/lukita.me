@@ -7,7 +7,7 @@ tags: [remote-work, career, market]
 lang: en
 ---
 
-[Leia em português](/posts/a-grande-resignacao/){: .idioma}
+[Leia em português](/posts/a-grande-resignacao/){: .lang-link}
 
 > This article is an English translation of the original article written in Portuguese, first published on [LinkedIn](https://www.linkedin.com/pulse/grande-resigna%C3%A7%C3%A3o-lucas-duarte/) on March 28, 2022.
 {: .prompt-info }

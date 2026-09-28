@@ -1,37 +1,37 @@
 {%- comment -%}
-Barras agrupadas: acurácia do Dinah-0 × Jev nos mesmos itens (pareado).
-Uso: {% include grafico-dinah-jev.html lang="pt" %}  ou  lang="en"
-Paleta validada (dataviz): Dinah azul #2a78d6 / #3987e5, Jev laranja #eb6834 / #d95926.
+Grouped bars: Dinah-0 × Jev accuracy on the same items (paired).
+Usage: {% include chart-dinah-jev.html lang="pt" %}  or  lang="en"
+Validated palette (dataviz): Dinah blue #2a78d6 / #3987e5, Jev orange #eb6834 / #d95926.
 {%- endcomment -%}
 {%- assign en = false -%}{%- if include.lang == "en" -%}{%- assign en = true -%}{%- endif -%}
 {%- if en -%}
-  {%- assign titulo = "Accuracy on the same items (paired)" -%}
+  {%- assign title = "Accuracy on the same items (paired)" -%}
   {%- assign g1 = "Typed decisions (EN)" -%}{%- assign g2 = "Typed decisions (PT)" -%}{%- assign g3 = "Chess (Lichess)" -%}
-  {%- assign nota = "2,000 / 1,895 / 2,000 items. Differences: +3.3, +5.0 and +13.8 points (p = 0.004, p < 0.001, p < 0.001)." -%}
+  {%- assign note = "2,000 / 1,895 / 2,000 items. Differences: +3.3, +5.0 and +13.8 points (p = 0.004, p < 0.001, p < 0.001)." -%}
 {%- else -%}
-  {%- assign titulo = "Acurácia nos mesmos itens (pareado)" -%}
+  {%- assign title = "Acurácia nos mesmos itens (pareado)" -%}
   {%- assign g1 = "Decisões tipadas (EN)" -%}{%- assign g2 = "Decisões tipadas (PT)" -%}{%- assign g3 = "Xadrez (Lichess)" -%}
-  {%- assign nota = "2.000 / 1.895 / 2.000 itens. Diferenças: +3,3, +5,0 e +13,8 pontos (p = 0,004, p < 0,001, p < 0,001)." -%}
+  {%- assign note = "2.000 / 1.895 / 2.000 itens. Diferenças: +3,3, +5,0 e +13,8 pontos (p = 0,004, p < 0,001, p < 0,001)." -%}
 {%- endif -%}
 {%- assign sep = "," -%}{%- if en -%}{%- assign sep = "." -%}{%- endif -%}
-<figure class="grafico-viz" role="img" aria-label="{{ titulo }}">
-  <div class="gv-cabecalho">
-    <strong>{{ titulo }}</strong>
-    <span class="gv-legenda"><i class="gv-dinah"></i>Dinah-0 <i class="gv-jev"></i>Jev</span>
+<figure class="chart-viz" role="img" aria-label="{{ title }}">
+  <div class="gv-header">
+    <strong>{{ title }}</strong>
+    <span class="gv-legend"><i class="gv-dinah"></i>Dinah-0 <i class="gv-jev"></i>Jev</span>
   </div>
   <svg viewBox="0 0 640 300" preserveAspectRatio="xMidYMid meet">
-    <!-- grade: 0, 25, 50, 75, 100% (altura útil 220px, base em y=250) -->
-    <g class="gv-grade">
+    <!-- grid: 0, 25, 50, 75, 100% (220px plot height, baseline at y=250) -->
+    <g class="gv-grid">
       <line x1="48" x2="628" y1="250" y2="250"/><line x1="48" x2="628" y1="195" y2="195"/>
       <line x1="48" x2="628" y1="140" y2="140"/><line x1="48" x2="628" y1="85" y2="85"/>
       <line x1="48" x2="628" y1="30" y2="30"/>
     </g>
-    <g class="gv-eixo">
+    <g class="gv-axis">
       <text x="40" y="254">0%</text><text x="40" y="199">25%</text><text x="40" y="144">50%</text>
       <text x="40" y="89">75%</text><text x="40" y="34">100%</text>
     </g>
-    {%- comment -%} y = 250 − 2,2 × valor; barras de 56px, 2px de vão {%- endcomment -%}
-    <g class="gv-barras">
+    {%- comment -%} y = 250 - 2.2 × value; 56px bars, 2px gap {%- endcomment -%}
+    <g class="gv-bars">
       <path class="gv-dinah" d="M92,250 V86.03 a4,4 0 0 1 4,-4 H144 a4,4 0 0 1 4,4 V250 Z"><title>Dinah-0 · {{ g1 }}: 76{{ sep }}4%</title></path>
       <path class="gv-jev" d="M150,250 V93.29 a4,4 0 0 1 4,-4 H202 a4,4 0 0 1 4,4 V250 Z"><title>Jev · {{ g1 }}: 73{{ sep }}1%</title></path>
       <path class="gv-dinah" d="M285,250 V82.07 a4,4 0 0 1 4,-4 H337 a4,4 0 0 1 4,4 V250 Z"><title>Dinah-0 · {{ g2 }}: 78{{ sep }}2%</title></path>
@@ -39,14 +39,14 @@ Paleta validada (dataviz): Dinah azul #2a78d6 / #3987e5, Jev laranja #eb6834 / #
       <path class="gv-dinah" d="M478,250 V117.60 a4,4 0 0 1 4,-4 H530 a4,4 0 0 1 4,4 V250 Z"><title>Dinah-0 · {{ g3 }}: 62{{ sep }}0%</title></path>
       <path class="gv-jev" d="M536,250 V147.85 a4,4 0 0 1 4,-4 H588 a4,4 0 0 1 4,4 V250 Z"><title>Jev · {{ g3 }}: 48{{ sep }}3%</title></path>
     </g>
-    <g class="gv-valores">
+    <g class="gv-values">
       <text x="120" y="74">76{{ sep }}4</text><text x="178" y="81">73{{ sep }}1</text>
       <text x="313" y="70">78{{ sep }}2</text><text x="371" y="81">73{{ sep }}2</text>
       <text x="506" y="106">62{{ sep }}0</text><text x="564" y="136">48{{ sep }}3</text>
     </g>
-    <g class="gv-rotulos">
+    <g class="gv-labels">
       <text x="149" y="274">{{ g1 }}</text><text x="342" y="274">{{ g2 }}</text><text x="535" y="274">{{ g3 }}</text>
     </g>
   </svg>
-  <figcaption>{{ nota }}</figcaption>
+  <figcaption>{{ note }}</figcaption>
 </figure>

@@ -5,9 +5,9 @@ order: 4
 title: Sobre
 ---
 
-<div class="sobre" data-lang="pt" markdown="1">
+<div class="about-lang" data-lang="pt" markdown="1">
 
-[Read in English](#){: .troca-idioma data-para="en" }
+[Read in English](#){: .lang-switch data-to="en" }
 
 Oi, eu sou o **Lukita**.
 
@@ -29,9 +29,9 @@ Todo post sai em português e em inglês.
 
 </div>
 
-<div class="sobre" data-lang="en" markdown="1" hidden>
+<div class="about-lang" data-lang="en" markdown="1" hidden>
 
-[Leia em português](#){: .troca-idioma data-para="pt" }
+[Leia em português](#){: .lang-switch data-to="pt" }
 
 Hi, I'm **Lukita**.
 
@@ -55,18 +55,18 @@ Every post comes out in Portuguese and English.
 
 <script>
   (function () {
-    var blocos = document.querySelectorAll('.sobre[data-lang]');
-    function mostra(idioma, salvar) {
-      blocos.forEach(function (b) { b.hidden = b.dataset.lang !== idioma; });
-      if (salvar) { try { localStorage.setItem('lukita-idioma', idioma); } catch (e) {} }
+    var blocks = document.querySelectorAll('.about-lang[data-lang]');
+    function show(lang, save) {
+      blocks.forEach(function (b) { b.hidden = b.dataset.lang !== lang; });
+      if (save) { try { localStorage.setItem('lukita-lang', lang); } catch (e) {} }
     }
-    document.querySelectorAll('.troca-idioma').forEach(function (a) {
-      a.addEventListener('click', function (e) { e.preventDefault(); mostra(a.dataset.para, true); });
+    document.querySelectorAll('.lang-switch').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); show(a.dataset.to, true); });
     });
-    // mesma escolha da home; sem escolha (ou "todos"), segue o idioma do navegador
-    var salvo = null;
-    try { salvo = localStorage.getItem('lukita-idioma'); } catch (e) {}
-    var navegador = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-    mostra(salvo === 'pt' || salvo === 'en' ? salvo : (navegador.indexOf('pt') === 0 ? 'pt' : 'en'), false);
+    // same choice as the home filter; with no choice (or "all"), follow the browser language
+    var saved = null;
+    try { saved = localStorage.getItem('lukita-lang'); } catch (e) {}
+    var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    show(saved === 'pt' || saved === 'en' ? saved : (browser.indexOf('pt') === 0 ? 'pt' : 'en'), false);
   })();
 </script>

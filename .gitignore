@@ -32,6 +32,6 @@ assets/js/dist
 Thumbs.db
 vendor/
 
-# vídeos brutos (o post usa o MP4 convertido em assets/media)
+# raw videos and photos (posts use the converted files under assets/)
 *.mov
 IMG_*.jpg

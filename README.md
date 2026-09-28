@@ -1,38 +1,36 @@
 # lukita.me
 
-Blog do Lukita: um dev mobile entediado usando IA para aprender coisas fora da minha área. Engenharia de software, produto e IA aplicada, com os números na mesa. Todo post sai em português e em inglês.
+Lukita's blog: a bored mobile dev using AI to learn things outside my field. Software engineering, product and applied AI, with the numbers on the table. Every post comes out in Portuguese and English.
 
-*Lukita's blog: a bored mobile dev using AI to learn things outside my field. Every post comes out in Portuguese and English.*
+## Running locally
 
-## Rodando local
-
-Precisa de Ruby 3.3+ e Bundler.
+Requires Ruby 3.3+ and Bundler.
 
 ```shell
 bundle install
-bundle exec jekyll serve --livereload          # http://127.0.0.1:4000
-bundle exec jekyll serve --unpublished --future # inclui rascunhos (published: false)
+bundle exec jekyll serve --livereload           # http://127.0.0.1:4000
+bundle exec jekyll serve --unpublished --future # include drafts (published: false)
 ```
 
-## Estrutura
+## Layout
 
-| Onde | O quê |
+| Path | What |
 |---|---|
-| `_posts/` | Posts em pares: `AAAA-MM-DD-slug.md` (pt) e `AAAA-MM-DD-slug-en.md` (en), cada um com `lang:` e link para o outro |
-| `_tabs/about.md` | Página Sobre, em pt e en na mesma página |
-| `_layouts/home.html` | Home do Chirpy com filtro de idioma (bandeiras); a escolha fica salva e, sem escolha, segue o idioma do navegador |
-| `_includes/grafico-*.html` | Gráficos SVG dos posts, com tema claro e escuro |
-| `_includes/newsletter.html` | Formulário de inscrição (Kit) no fim dos posts |
-| `assets/css/jekyll-theme-chirpy.scss` | Ajustes visuais sobre o Chirpy (paleta zinc, tabelas, gráficos, filtro, newsletter) |
-| `tools/newsletter.py` | Agenda no Kit um e-mail para cada post novo |
+| `_posts/` | Posts in pairs: `YYYY-MM-DD-slug.md` (pt) and `YYYY-MM-DD-slug-en.md` (en), each with `lang:` and a link to the other |
+| `_tabs/about.md` | About page, pt and en on the same page |
+| `_layouts/home.html` | Chirpy home with a language filter (flags); the choice is saved and, without one, follows the browser language |
+| `_includes/chart-*.html` | SVG charts used in posts, light and dark themes |
+| `_includes/newsletter.html` | Signup form (Kit) at the end of posts |
+| `assets/css/jekyll-theme-chirpy.scss` | Visual tweaks on top of Chirpy (zinc palette, tables, charts, filter, newsletter) |
+| `tools/newsletter.py` | Schedules a Kit email for every new post |
 
-## Deploy e newsletter
+## Deploy and newsletter
 
-- **Build and Deploy** (`.github/workflows/pages-deploy.yml`): a cada push na `main`, gera o site e publica no GitHub Pages.
-- **Newsletter** (`.github/workflows/newsletter.yml`): depois de um deploy bem-sucedido, procura posts publicados que ainda não estão em `_data/newsletter_enviados.yml`, agenda o e-mail no [Kit](https://kit.com) (plano grátis, até 10 mil inscritos) para 10 minutos depois e registra o slug. Posts em pt vão para quem se inscreveu pelo formulário pt, os demais para o en. Trava em 2 posts por vez e, rodando à mão, começa em modo ensaio.
+- **Build and Deploy** (`.github/workflows/pages-deploy.yml`): on every push to `main`, builds the site and publishes it to GitHub Pages.
+- **Newsletter** (`.github/workflows/newsletter.yml`): after a successful deploy, looks for published posts not yet in `_data/newsletter_sent.yml`, schedules the email on [Kit](https://kit.com) (free plan, up to 10k subscribers) 10 minutes ahead and records the slug. Posts in pt go to subscribers of the pt form, the rest to the en one. It stops at 2 posts per run and, when triggered manually, starts in dry-run mode.
 
-Configuração: ids dos formulários e segmentos em `newsletter:` no `_config.yml` e a chave da API no secret `KIT_API_KEY`.
+Configuration: form and segment ids under `newsletter:` in `_config.yml`, and the API key in the `KIT_API_KEY` secret.
 
-## Créditos
+## Credits
 
-Tema [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy), licença MIT (veja `LICENSE`). Os textos e imagens dos posts são do autor.
+[Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) theme, MIT license (see `LICENSE`). Post text and images are the author's.

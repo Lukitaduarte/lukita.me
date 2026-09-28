@@ -7,7 +7,7 @@ tags: [trabalho-remoto, carreira, mercado]
 lang: pt-BR
 ---
 
-[Read in English](/posts/the-great-resignation/){: .idioma}
+[Read in English](/posts/the-great-resignation/){: .lang-link}
 
 > Publicado originalmente no [LinkedIn](https://www.linkedin.com/pulse/grande-resigna%C3%A7%C3%A3o-lucas-duarte/), em 28 de março de 2022.
 {: .prompt-info }

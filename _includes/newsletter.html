@@ -1,6 +1,6 @@
 {%- comment -%}
-Formulário de inscrição (Kit). Uso: {% include newsletter.html %} no fim do post. Some se o id do formulário estiver vazio.
-Kit cuida da confirmação por e-mail (double opt-in) e do descadastro.
+Newsletter signup form (Kit). Usage: {% include newsletter.html %} at the end of a post. Renders nothing while the form id is empty.
+Kit handles email confirmation (double opt-in) and unsubscribes.
 {%- endcomment -%}
 {%- assign pt = true -%}{%- if page.lang and page.lang contains "en" -%}{%- assign pt = false -%}{%- endif -%}
 {%- if pt -%}{%- assign form = site.newsletter.form_pt -%}{%- else -%}{%- assign form = site.newsletter.form_en -%}{%- endif -%}

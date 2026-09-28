@@ -160,7 +160,7 @@ pwa:
     deny_paths:
       # - "/example"  # URLs match `<SITE_URL>/example/*` will not be cached by the PWA
 
-paginate: 50  # todos na mesma página, para o filtro de idioma da home funcionar sobre a lista inteira
+paginate: 50  # everything on one page, so the home language filter works over the whole list
 
 # The base URL of your site
 baseurl: ""
@@ -238,9 +238,9 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
-# Newsletter via Kit (plano grátis, até 10k inscritos). Ids vêm do painel do Kit; vazios = formulário e envio desligados.
+# Newsletter via Kit (free plan, up to 10k subscribers). Ids come from the Kit dashboard; empty = form and sending off.
 newsletter:
-  form_pt: ""        # id do formulário "lukita.me pt"
-  form_en: ""        # id do formulário "lukita.me en"
-  segmento_pt: ""    # segmento "inscritos no formulário pt"
-  segmento_en: ""    # segmento "inscritos no formulário en"
+  form_pt: ""        # id of the "lukita.me pt" form
+  form_en: ""        # id of the "lukita.me en" form
+  segment_pt: ""     # segment "subscribed to the pt form"
+  segment_en: ""     # segment "subscribed to the en form"

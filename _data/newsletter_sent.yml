@@ -1,0 +1,8 @@
+# Posts that already went out by email (or never should). The newsletter.yml workflow appends here on its own.
+# Older posts are seeded so nothing is sent retroactively.
+- a-grande-resignacao
+- the-great-resignation
+- por-que-migrar-de-nativo-para-flutter
+- why-we-migrated-from-native-to-flutter
+- doso
+- doso-en

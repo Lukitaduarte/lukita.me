@@ -1,13 +1,13 @@
 name: "Newsletter"
-# Depois de cada deploy do site, agenda no Kit um e-mail para cada post novo e registra o slug em _data/newsletter_enviados.yml.
+# After each site deploy, schedule a Kit email for every new post and record its slug in _data/newsletter_sent.yml.
 on:
   workflow_run:
     workflows: ["Build and Deploy"]
     types: [completed]
   workflow_dispatch:
     inputs:
-      ensaio:
-        description: "Só mostrar o que seria enviado"
+      dry_run:
+        description: "Only print what would be sent"
         type: boolean
         default: true
 
@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  enviar:
+  send:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
@@ -27,14 +27,14 @@ jobs:
         with:
           ref: main
       - run: pip install pyyaml
-      - name: Agendar e-mails
+      - name: Schedule emails
         env:
           KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
-        run: python tools/newsletter.py ${{ inputs.ensaio && '--ensaio' || '' }}
-      - name: Registrar enviados
+        run: python tools/newsletter.py ${{ inputs.dry_run && '--dry-run' || '' }}
+      - name: Record sent posts
         run: |
-          git diff --quiet _data/newsletter_enviados.yml && exit 0
+          git diff --quiet _data/newsletter_sent.yml && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "newsletter: registra posts enviados" _data/newsletter_enviados.yml
+          git commit -m "newsletter: record sent posts" _data/newsletter_sent.yml
           git push

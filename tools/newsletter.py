@@ -1,11 +1,12 @@
-"""Manda um e-mail pelo Kit para cada post novo publicado. Roda no GitHub Actions depois do deploy do Pages.
+"""Schedules a Kit email for every newly published post. Runs on GitHub Actions after the Pages deploy.
 
-Post novo = arquivo em _posts sem `published: false`, com data já passada e slug fora de _data/newsletter_enviados.yml.
-O e-mail é um convite (imagem, título, descrição e link), não o post inteiro: os includes do Chirpy não viram HTML de e-mail.
-Posts em pt vão para o segmento pt, os demais para o en. O agendamento fica 10 min à frente, o que dá tempo de cancelar no Kit.
+A new post is a file in _posts without `published: false`, dated in the past, whose slug is not in
+_data/newsletter_sent.yml. The email is a teaser (image, title, description and link), not the full post:
+Chirpy includes don't render as email HTML. Portuguese posts go to the pt segment, everything else to the en one.
+Sending is scheduled 10 minutes ahead, which leaves time to cancel it in Kit.
 
-    KIT_API_KEY=... python tools/newsletter.py            # envia e registra
-    KIT_API_KEY=... python tools/newsletter.py --ensaio   # só mostra o que faria
+    KIT_API_KEY=... python tools/newsletter.py            # schedule and record
+    KIT_API_KEY=... python tools/newsletter.py --dry-run  # only print what would be sent
 """
 from __future__ import annotations
 
@@ -14,9 +15,9 @@ from pathlib import Path
 
 import yaml
 
-RAIZ = Path(__file__).resolve().parents[1]
-ENVIADOS = RAIZ / "_data/newsletter_enviados.yml"
-MAX_POR_VEZ = 2   # trava contra disparo em massa por engano
+ROOT = Path(__file__).resolve().parents[1]
+SENT = ROOT / "_data/newsletter_sent.yml"
+MAX_PER_RUN = 2   # guard against an accidental mass send
 
 
 def front_matter(p: Path) -> dict:
@@ -24,7 +25,7 @@ def front_matter(p: Path) -> dict:
     return yaml.safe_load(m.group(1)) if m else {}
 
 
-def data_do_post(p: Path, fm: dict) -> dt.datetime:
+def post_date(p: Path, fm: dict) -> dt.datetime:
     d = fm.get("date")
     if isinstance(d, dt.datetime):
         return d if d.tzinfo else d.replace(tzinfo=dt.timezone.utc)
@@ -33,15 +34,15 @@ def data_do_post(p: Path, fm: dict) -> dt.datetime:
     return dt.datetime.strptime(p.name[:10], "%Y-%m-%d").replace(tzinfo=dt.timezone.utc)
 
 
-def corpo(titulo: str, descricao: str, url: str, imagem: str | None, pt: bool) -> str:
-    botao = "Ler o post" if pt else "Read the post"
-    img = f'<p><a href="{url}"><img src="{imagem}" alt="" style="max-width:100%;border-radius:8px"></a></p>' if imagem else ""
-    return (f'{img}<h2 style="margin:0 0 8px">{html.escape(titulo)}</h2>'
-            f'<p>{html.escape(descricao)}</p><p><a href="{url}"><strong>{botao} →</strong></a></p>')
+def body(title: str, description: str, url: str, image: str | None, pt: bool) -> str:
+    button = "Ler o post" if pt else "Read the post"
+    img = f'<p><a href="{url}"><img src="{image}" alt="" style="max-width:100%;border-radius:8px"></a></p>' if image else ""
+    return (f'{img}<h2 style="margin:0 0 8px">{html.escape(title)}</h2>'
+            f'<p>{html.escape(description)}</p><p><a href="{url}"><strong>{button} →</strong></a></p>')
 
 
-def kit(caminho: str, corpo_json: dict) -> dict:
-    req = urllib.request.Request(f"https://api.kit.com/v4/{caminho}", data=json.dumps(corpo_json).encode(), method="POST",
+def kit(path: str, payload: dict) -> dict:
+    req = urllib.request.Request(f"https://api.kit.com/v4/{path}", data=json.dumps(payload).encode(), method="POST",
                                  headers={"X-Kit-Api-Key": os.environ["KIT_API_KEY"], "Content-Type": "application/json",
                                           "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as r:
@@ -49,42 +50,42 @@ def kit(caminho: str, corpo_json: dict) -> dict:
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--ensaio", action="store_true"); a = ap.parse_args()
-    cfg = yaml.safe_load((RAIZ / "_config.yml").read_text())
+    ap = argparse.ArgumentParser(); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
+    cfg = yaml.safe_load((ROOT / "_config.yml").read_text())
     base, nl = cfg["url"].rstrip("/"), cfg.get("newsletter") or {}
-    enviados = yaml.safe_load(ENVIADOS.read_text()) or []
-    agora = dt.datetime.now(dt.timezone.utc)
-    novos = []
-    for p in sorted((RAIZ / "_posts").glob("*.md")):
+    sent = yaml.safe_load(SENT.read_text()) or []
+    now = dt.datetime.now(dt.timezone.utc)
+    new = []
+    for p in sorted((ROOT / "_posts").glob("*.md")):
         fm, slug = front_matter(p), p.stem[11:]
-        if slug in enviados or fm.get("published") is False or data_do_post(p, fm) > agora:
+        if slug in sent or fm.get("published") is False or post_date(p, fm) > now:
             continue
-        novos.append((p, fm, slug))
-    if not novos:
-        print("nenhum post novo"); return
-    if len(novos) > MAX_POR_VEZ:
-        sys.exit(f"{len(novos)} posts novos de uma vez ({[s for *_, s in novos]}); acima da trava de {MAX_POR_VEZ}. "
-                 "Se for de propósito, envie um a um ou acrescente os slugs em _data/newsletter_enviados.yml.")
-    for p, fm, slug in novos:
+        new.append((p, fm, slug))
+    if not new:
+        print("no new posts"); return
+    if len(new) > MAX_PER_RUN:
+        sys.exit(f"{len(new)} new posts at once ({[s for *_, s in new]}), above the limit of {MAX_PER_RUN}. "
+                 "If that's intended, publish them one at a time or add the slugs to _data/newsletter_sent.yml.")
+    for p, fm, slug in new:
         pt = str(fm.get("lang") or cfg.get("lang", "")).startswith("pt")
-        segmento = nl.get("segmento_pt" if pt else "segmento_en")
-        if not segmento:
-            sys.exit(f"segmento {'pt' if pt else 'en'} vazio em _config.yml (newsletter)")
+        segment = nl.get("segment_pt" if pt else "segment_en")
+        if not segment:
+            sys.exit(f"segment_{'pt' if pt else 'en'} is empty in _config.yml (newsletter)")
         url = f"{base}/posts/{slug}/"
-        imagem = (fm.get("image") or {}).get("path") if isinstance(fm.get("image"), dict) else fm.get("image")
-        imagem = f"{base}{imagem}" if imagem and imagem.startswith("/") else imagem
-        envio = (agora + dt.timedelta(minutes=10)).isoformat(timespec="seconds")
-        pedido = {"subject": fm["title"], "description": f"post {slug}", "preview_text": fm.get("description", ""),
-                  "content": corpo(fm["title"], fm.get("description", ""), url, imagem, pt),
-                  "public": False, "published_at": agora.isoformat(timespec="seconds"), "send_at": envio,
-                  "subscriber_filter": [{"all": [{"type": "segment", "ids": [int(segmento)]}], "any": None, "none": None}]}
-        if a.ensaio:
-            print(f"[ensaio] {slug} -> segmento {segmento} às {envio}\n{json.dumps(pedido, ensure_ascii=False, indent=1)}")
+        image = (fm.get("image") or {}).get("path") if isinstance(fm.get("image"), dict) else fm.get("image")
+        image = f"{base}{image}" if image and image.startswith("/") else image
+        send_at = (now + dt.timedelta(minutes=10)).isoformat(timespec="seconds")
+        payload = {"subject": fm["title"], "description": f"post {slug}", "preview_text": fm.get("description", ""),
+                   "content": body(fm["title"], fm.get("description", ""), url, image, pt),
+                   "public": False, "published_at": now.isoformat(timespec="seconds"), "send_at": send_at,
+                   "subscriber_filter": [{"all": [{"type": "segment", "ids": [int(segment)]}], "any": None, "none": None}]}
+        if a.dry_run:
+            print(f"[dry run] {slug} -> segment {segment} at {send_at}\n{json.dumps(payload, ensure_ascii=False, indent=1)}")
             continue
-        r = kit("broadcasts", pedido)
-        print(f"{slug}: broadcast {r.get('broadcast', {}).get('id')} agendado para {envio}")
-        enviados.append(slug)
-        ENVIADOS.write_text(ENVIADOS.read_text().rstrip("\n") + f"\n- {slug}\n")   # registra a cada envio, sem reescrever o arquivo
+        r = kit("broadcasts", payload)
+        print(f"{slug}: broadcast {r.get('broadcast', {}).get('id')} scheduled for {send_at}")
+        sent.append(slug)
+        SENT.write_text(SENT.read_text().rstrip("\n") + f"\n- {slug}\n")   # record after each send, without rewriting the file
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ image:
   alt: Why did we choose to migrate from native to Flutter?
 ---
 
-[Leia em português](/posts/por-que-migrar-de-nativo-para-flutter/){: .idioma}
+[Leia em português](/posts/por-que-migrar-de-nativo-para-flutter/){: .lang-link}
 
 > This article is an English translation of the original article written in Portuguese, first published on [Youse Tech, on Medium](https://medium.com/youse-tech/por-que-optamos-migrar-de-nativo-para-o-flutter-3dc921612efb), on March 30, 2022.
 {: .prompt-info }

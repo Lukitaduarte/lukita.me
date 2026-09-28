@@ -46,14 +46,14 @@ layout: default
   {% endfor %}
 {% endif %}
 
-<div class="filtro-idioma" role="group" aria-label="Filtrar posts por idioma">
-  <button type="button" data-idioma="todos" aria-pressed="true">Todos / All</button>
-  <button type="button" data-idioma="pt" aria-pressed="false">
-    <svg class="bandeira" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="2" fill="#009b3a"/><path d="M14 2.5 25.5 10 14 17.5 2.5 10Z" fill="#fedf00"/><circle cx="14" cy="10" r="4.6" fill="#002776"/><path d="M9.6 9.1c2.9-.6 6.1-.2 8.8 1.2" stroke="#fff" stroke-width=".9" fill="none"/></svg>
+<div class="lang-filter" role="group" aria-label="Filter posts by language">
+  <button type="button" data-lang-choice="all" aria-pressed="true">Todos / All</button>
+  <button type="button" data-lang-choice="pt" aria-pressed="false">
+    <svg class="flag" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="2" fill="#009b3a"/><path d="M14 2.5 25.5 10 14 17.5 2.5 10Z" fill="#fedf00"/><circle cx="14" cy="10" r="4.6" fill="#002776"/><path d="M9.6 9.1c2.9-.6 6.1-.2 8.8 1.2" stroke="#fff" stroke-width=".9" fill="none"/></svg>
     Português
   </button>
-  <button type="button" data-idioma="en" aria-pressed="false">
-    <svg class="bandeira" viewBox="0 0 28 20" aria-hidden="true"><defs><clipPath id="bandeira-us"><rect width="28" height="20" rx="2"/></clipPath></defs><g clip-path="url(#bandeira-us)"><rect width="28" height="20" fill="#fff"/><g fill="#b22234"><rect y="0" width="28" height="1.54"/><rect y="3.08" width="28" height="1.54"/><rect y="6.15" width="28" height="1.54"/><rect y="9.23" width="28" height="1.54"/><rect y="12.31" width="28" height="1.54"/><rect y="15.38" width="28" height="1.54"/><rect y="18.46" width="28" height="1.54"/></g><rect width="12" height="10.77" fill="#3c3b6e"/></g></svg>
+  <button type="button" data-lang-choice="en" aria-pressed="false">
+    <svg class="flag" viewBox="0 0 28 20" aria-hidden="true"><defs><clipPath id="flag-us"><rect width="28" height="20" rx="2"/></clipPath></defs><g clip-path="url(#flag-us)"><rect width="28" height="20" fill="#fff"/><g fill="#b22234"><rect y="0" width="28" height="1.54"/><rect y="3.08" width="28" height="1.54"/><rect y="6.15" width="28" height="1.54"/><rect y="9.23" width="28" height="1.54"/><rect y="12.31" width="28" height="1.54"/><rect y="15.38" width="28" height="1.54"/><rect y="18.46" width="28" height="1.54"/></g><rect width="12" height="10.77" fill="#3c3b6e"/></g></svg>
     English
   </button>
 </div>
@@ -153,19 +153,19 @@ layout: default
 
 <script>
   (function () {
-    var botoes = document.querySelectorAll('.filtro-idioma button');
+    var buttons = document.querySelectorAll('.lang-filter button');
     var cards = document.querySelectorAll('#post-list article[data-lang]');
-    function aplica(idioma, automatico) {
-      botoes.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.idioma === idioma ? 'true' : 'false'); });
-      cards.forEach(function (c) { c.hidden = idioma !== 'todos' && c.dataset.lang !== idioma; });
-      if (!automatico) { try { localStorage.setItem('lukita-idioma', idioma); } catch (e) {} }
+    function apply(lang, automatic) {
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.langChoice === lang ? 'true' : 'false'); });
+      cards.forEach(function (c) { c.hidden = lang !== 'all' && c.dataset.lang !== lang; });
+      if (!automatic) { try { localStorage.setItem('lukita-lang', lang); } catch (e) {} }
     }
-    botoes.forEach(function (b) { b.addEventListener('click', function () { aplica(b.dataset.idioma); }); });
-    // sem escolha salva, usa o idioma do navegador: pt* -> português, qualquer outro -> inglês
-    var navegador = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-    var padrao = navegador.indexOf('pt') === 0 ? 'pt' : 'en';
-    var salvo = null;
-    try { salvo = localStorage.getItem('lukita-idioma'); } catch (e) {}
-    aplica(salvo || padrao, !salvo);
+    buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.langChoice); }); });
+    // no saved choice: follow the browser language (pt* -> Portuguese, anything else -> English)
+    var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    var fallback = browser.indexOf('pt') === 0 ? 'pt' : 'en';
+    var saved = null;
+    try { saved = localStorage.getItem('lukita-lang'); } catch (e) {}
+    apply(saved || fallback, !saved);
   })();
 </script>

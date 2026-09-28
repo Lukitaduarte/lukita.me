@@ -1,8 +1,0 @@
-# Posts que já viraram e-mail (ou que nunca devem virar). O workflow newsletter.yml acrescenta aqui sozinho.
-# Os posts antigos entram de semente para não disparar e-mail retroativo.
-- a-grande-resignacao
-- the-great-resignation
-- por-que-migrar-de-nativo-para-flutter
-- why-we-migrated-from-native-to-flutter
-- doso
-- doso-en
