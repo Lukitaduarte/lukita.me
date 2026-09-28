@@ -161,7 +161,7 @@ layout: default
       if (!automatic) { try { localStorage.setItem('lukita-lang', lang); } catch (e) {} }
     }
     buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.langChoice); }); });
-    // no saved choice: follow the browser language (pt* -> Portuguese, anything else -> English)
+    /* no saved choice: follow the browser language (pt* -> Portuguese, anything else -> English) */
     var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
     var fallback = browser.indexOf('pt') === 0 ? 'pt' : 'en';
     var saved = null;

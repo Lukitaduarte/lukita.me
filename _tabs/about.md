@@ -63,7 +63,7 @@ Every post comes out in Portuguese and English.
     document.querySelectorAll('.lang-switch').forEach(function (a) {
       a.addEventListener('click', function (e) { e.preventDefault(); show(a.dataset.to, true); });
     });
-    // same choice as the home filter; with no choice (or "all"), follow the browser language
+    /* same choice as the home filter; with no choice (or "all"), follow the browser language */
     var saved = null;
     try { saved = localStorage.getItem('lukita-lang'); } catch (e) {}
     var browser = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
