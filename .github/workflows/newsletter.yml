@@ -10,6 +10,10 @@ on:
         description: "Only print what would be sent"
         type: boolean
         default: true
+      list_ids:
+        description: "Only list the Kit form and segment ids"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,7 +34,7 @@ jobs:
       - name: Schedule emails
         env:
           KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
-        run: python tools/newsletter.py ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: python tools/newsletter.py ${{ inputs.list_ids && '--list-ids' || '' }} ${{ inputs.dry_run && '--dry-run' || '' }}
       - name: Record sent posts
         run: |
           git diff --quiet _data/newsletter_sent.yml && exit 0

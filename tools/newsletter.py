@@ -7,6 +7,7 @@ Sending is scheduled 10 minutes ahead, which leaves time to cancel it in Kit.
 
     KIT_API_KEY=... python tools/newsletter.py            # schedule and record
     KIT_API_KEY=... python tools/newsletter.py --dry-run  # only print what would be sent
+    KIT_API_KEY=... python tools/newsletter.py --list-ids # print the Kit form and segment ids to put in _config.yml
 """
 from __future__ import annotations
 
@@ -49,8 +50,25 @@ def kit(path: str, payload: dict) -> dict:
         return json.load(r)
 
 
+def kit_get(path: str) -> dict:
+    req = urllib.request.Request(f"https://api.kit.com/v4/{path}", headers={"X-Kit-Api-Key": os.environ["KIT_API_KEY"], "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
+
+
+def list_ids():
+    for kind in ("forms", "segments", "tags"):
+        items = kit_get(kind).get(kind, [])
+        print(f"{kind}: {len(items)}")
+        for item in items:
+            print(f"  {item.get('id')}  {item.get('name')}")
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--dry-run", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--dry-run", action="store_true"); ap.add_argument("--list-ids", action="store_true")
+    a = ap.parse_args()
+    if a.list_ids:
+        list_ids(); return
     cfg = yaml.safe_load((ROOT / "_config.yml").read_text())
     base, nl = cfg["url"].rstrip("/"), cfg.get("newsletter") or {}
     sent = yaml.safe_load(SENT.read_text()) or []
