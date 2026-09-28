@@ -1,0 +1,16 @@
+{%- comment -%}
+Formulário de inscrição (Kit). Uso: {% include newsletter.html %} no fim do post. Some se o id do formulário estiver vazio.
+Kit cuida da confirmação por e-mail (double opt-in) e do descadastro.
+{%- endcomment -%}
+{%- assign pt = true -%}{%- if page.lang and page.lang contains "en" -%}{%- assign pt = false -%}{%- endif -%}
+{%- if pt -%}{%- assign form = site.newsletter.form_pt -%}{%- else -%}{%- assign form = site.newsletter.form_en -%}{%- endif -%}
+{%- if form and form != "" -%}
+<form class="newsletter" action="https://app.kit.com/forms/{{ form }}/subscriptions" method="post">
+  <strong>{% if pt %}Quer receber o próximo post por e-mail?{% else %}Want the next post in your inbox?{% endif %}</strong>
+  <div>
+    <input type="email" name="email_address" required placeholder="{% if pt %}seu@email.com{% else %}you@email.com{% endif %}" aria-label="e-mail">
+    <button type="submit">{% if pt %}Inscrever{% else %}Subscribe{% endif %}</button>
+  </div>
+  <small>{% if pt %}Só posts novos, nada de spam. Sai quando quiser.{% else %}New posts only, no spam. Unsubscribe anytime.{% endif %}</small>
+</form>
+{%- endif -%}
