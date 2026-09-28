@@ -3,7 +3,7 @@ Newsletter signup form (Kit). Usage: {% include newsletter.html %} at the end of
 Kit handles email confirmation (double opt-in) and unsubscribes.
 {%- endcomment -%}
 {%- assign pt = true -%}{%- if page.lang and page.lang contains "en" -%}{%- assign pt = false -%}{%- endif -%}
-{%- if pt -%}{%- assign form = site.newsletter.form_pt -%}{%- else -%}{%- assign form = site.newsletter.form_en -%}{%- endif -%}
+{%- assign form = site.newsletter.form_id -%}
 {%- if form and form != "" -%}
 <form class="newsletter" action="https://app.kit.com/forms/{{ form }}/subscriptions" method="post">
   <strong>{% if pt %}Quer receber o próximo post por e-mail?{% else %}Want the next post in your inbox?{% endif %}</strong>

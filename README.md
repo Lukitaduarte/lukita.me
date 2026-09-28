@@ -27,9 +27,9 @@ bundle exec jekyll serve --unpublished --future # include drafts (published: fal
 ## Deploy and newsletter
 
 - **Build and Deploy** (`.github/workflows/pages-deploy.yml`): on every push to `main`, builds the site and publishes it to GitHub Pages.
-- **Newsletter** (`.github/workflows/newsletter.yml`): after a successful deploy, looks for published posts not yet in `_data/newsletter_sent.yml`, schedules the email on [Kit](https://kit.com) (free plan, up to 10k subscribers) 10 minutes ahead and records the slug. Posts in pt go to subscribers of the pt form, the rest to the en one. It stops at 2 posts per run and, when triggered manually, starts in dry-run mode.
+- **Newsletter** (`.github/workflows/newsletter.yml`): after a successful deploy, looks for published posts not yet in `_data/newsletter_sent.yml`, schedules the email on [Kit](https://kit.com) (free plan, up to 10k subscribers) 10 minutes ahead and records the slugs. A post `slug` and its English version `slug-en` go out as one email with both links, to all subscribers. Nothing is sent while `newsletter.send` is false; it stops at 2 articles per run and, when triggered manually, starts in dry-run mode (`list_ids` prints the Kit form ids).
 
-Configuration: form and segment ids under `newsletter:` in `_config.yml`, and the API key in the `KIT_API_KEY` secret.
+Configuration: `newsletter.form_id` and `newsletter.send` in `_config.yml`, and the API key in the `KIT_API_KEY` secret.
 
 ## Credits
 

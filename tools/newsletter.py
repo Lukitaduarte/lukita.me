@@ -1,13 +1,14 @@
-"""Schedules a Kit email for every newly published post. Runs on GitHub Actions after the Pages deploy.
+"""Schedules one Kit email per newly published article. Runs on GitHub Actions after the Pages deploy.
 
 A new post is a file in _posts without `published: false`, dated in the past, whose slug is not in
-_data/newsletter_sent.yml. The email is a teaser (image, title, description and link), not the full post:
-Chirpy includes don't render as email HTML. Portuguese posts go to the pt segment, everything else to the en one.
-Sending is scheduled 10 minutes ahead, which leaves time to cancel it in Kit.
+_data/newsletter_sent.yml. The Portuguese post `slug` and its English version `slug-en` are one article and go
+out as a single email with both links, to all subscribers. The email is a teaser (image, title, description and
+link), not the full post: Chirpy includes don't render as email HTML. Nothing is sent while `newsletter.send` is
+false in _config.yml. Sending is scheduled 10 minutes ahead, which leaves time to cancel it in Kit.
 
     KIT_API_KEY=... python tools/newsletter.py            # schedule and record
     KIT_API_KEY=... python tools/newsletter.py --dry-run  # only print what would be sent
-    KIT_API_KEY=... python tools/newsletter.py --list-ids # print the Kit form and segment ids to put in _config.yml
+    KIT_API_KEY=... python tools/newsletter.py --list-ids # print the Kit form ids to put in _config.yml
 """
 from __future__ import annotations
 
@@ -35,8 +36,7 @@ def post_date(p: Path, fm: dict) -> dt.datetime:
     return dt.datetime.strptime(p.name[:10], "%Y-%m-%d").replace(tzinfo=dt.timezone.utc)
 
 
-def body(title: str, description: str, url: str, image: str | None, pt: bool) -> str:
-    button = "Ler o post" if pt else "Read the post"
+def section(title: str, description: str, url: str, image: str | None, button: str) -> str:
     img = f'<p><a href="{url}"><img src="{image}" alt="" style="max-width:100%;border-radius:8px"></a></p>' if image else ""
     return (f'{img}<h2 style="margin:0 0 8px">{html.escape(title)}</h2>'
             f'<p>{html.escape(description)}</p><p><a href="{url}"><strong>{button} →</strong></a></p>')
@@ -57,7 +57,7 @@ def kit_get(path: str) -> dict:
 
 
 def list_ids():
-    for kind in ("forms", "segments", "tags"):
+    for kind in ("forms", "tags"):
         items = kit_get(kind).get(kind, [])
         print(f"{kind}: {len(items)}")
         for item in items:
@@ -78,35 +78,40 @@ def main():
         fm, slug = front_matter(p), p.stem[11:]
         if slug in sent or fm.get("published") is False or post_date(p, fm) > now:
             continue
-        new.append((p, fm, slug))
+        new.append((fm, slug))
     if not new:
         print("no new posts"); return
-    if not a.dry_run and not (os.environ.get("KIT_API_KEY") and nl.get("segment_pt") and nl.get("segment_en")):
-        print(f"newsletter not configured (KIT_API_KEY and newsletter segments), skipping {[s for *_, s in new]}"); return
-    if len(new) > MAX_PER_RUN:
-        sys.exit(f"{len(new)} new posts at once ({[s for *_, s in new]}), above the limit of {MAX_PER_RUN}. "
-                 "If that's intended, publish them one at a time or add the slugs to _data/newsletter_sent.yml.")
-    for p, fm, slug in new:
+    articles: dict[str, dict[str, tuple[dict, str]]] = {}
+    for fm, slug in new:
         pt = str(fm.get("lang") or cfg.get("lang", "")).startswith("pt")
-        segment = nl.get("segment_pt" if pt else "segment_en")
-        if not segment:
-            sys.exit(f"segment_{'pt' if pt else 'en'} is empty in _config.yml (newsletter)")
-        url = f"{base}/posts/{slug}/"
-        image = (fm.get("image") or {}).get("path") if isinstance(fm.get("image"), dict) else fm.get("image")
-        image = f"{base}{image}" if image and image.startswith("/") else image
+        key = slug[:-3] if slug.endswith("-en") else slug
+        articles.setdefault(key, {})["pt" if pt else "en"] = (fm, slug)
+    if not a.dry_run and not (os.environ.get("KIT_API_KEY") and nl.get("send")):
+        print(f"newsletter sending is off (needs KIT_API_KEY and newsletter.send: true), skipping {list(articles)}"); return
+    if len(articles) > MAX_PER_RUN:
+        sys.exit(f"{len(articles)} new articles at once ({list(articles)}), above the limit of {MAX_PER_RUN}. "
+                 "If that's intended, publish them one at a time or add the slugs to _data/newsletter_sent.yml.")
+    for key, versions in articles.items():
+        parts = []
+        for lang, button in (("pt", "Ler o post"), ("en", "Read in English")):
+            if lang in versions:
+                fm, slug = versions[lang]
+                image = (fm.get("image") or {}).get("path") if isinstance(fm.get("image"), dict) else fm.get("image")
+                image = f"{base}{image}" if image and image.startswith("/") and not parts else None
+                parts.append(section(fm["title"], fm.get("description", ""), f"{base}/posts/{slug}/", image, button))
+        main_fm = (versions.get("pt") or versions["en"])[0]
         send_at = (now + dt.timedelta(minutes=10)).isoformat(timespec="seconds")
-        payload = {"subject": fm["title"], "description": f"post {slug}", "preview_text": fm.get("description", ""),
-                   "content": body(fm["title"], fm.get("description", ""), url, image, pt),
-                   "public": False, "published_at": now.isoformat(timespec="seconds"), "send_at": send_at,
-                   "subscriber_filter": [{"all": [{"type": "segment", "ids": [int(segment)]}], "any": None, "none": None}]}
+        payload = {"subject": main_fm["title"], "description": f"article {key}", "preview_text": main_fm.get("description", ""),
+                   "content": '<hr style="border:0;border-top:1px solid #e4e4e7;margin:24px 0">'.join(parts),
+                   "public": False, "published_at": now.isoformat(timespec="seconds"), "send_at": send_at}
+        slugs = [s for _, s in versions.values()]
         if a.dry_run:
-            print(f"[dry run] {slug} -> segment {segment} at {send_at}\n{json.dumps(payload, ensure_ascii=False, indent=1)}")
+            print(f"[dry run] {slugs} -> all subscribers at {send_at}\n{json.dumps(payload, ensure_ascii=False, indent=1)}")
             continue
         r = kit("broadcasts", payload)
-        print(f"{slug}: broadcast {r.get('broadcast', {}).get('id')} scheduled for {send_at}")
-        sent.append(slug)
-        SENT.write_text(SENT.read_text().rstrip("\n") + f"\n- {slug}\n")   # record after each send, without rewriting the file
-
+        print(f"{slugs}: broadcast {r.get('broadcast', {}).get('id')} scheduled for {send_at}")
+        for s in slugs:   # record after each send, without rewriting the file
+            SENT.write_text(SENT.read_text().rstrip("\n") + f"\n- {s}\n")
 
 if __name__ == "__main__":
     main()

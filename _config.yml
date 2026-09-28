@@ -238,9 +238,7 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
-# Newsletter via Kit (free plan, up to 10k subscribers). Ids come from the Kit dashboard; empty = form and sending off.
+# Newsletter via Kit (free plan, up to 10k subscribers). One form for both languages; empty form_id hides it.
 newsletter:
-  form_pt: ""        # id of the "lukita.me pt" form
-  form_en: ""        # id of the "lukita.me en" form
-  segment_pt: ""     # segment "subscribed to the pt form"
-  segment_en: ""     # segment "subscribed to the en form"
+  form_id: "9974761"   # Kit form "Newsletter site"
+  send: false          # true = email each new article to all subscribers after the deploy
