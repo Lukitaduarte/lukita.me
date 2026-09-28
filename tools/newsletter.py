@@ -63,6 +63,8 @@ def main():
         new.append((p, fm, slug))
     if not new:
         print("no new posts"); return
+    if not a.dry_run and not (os.environ.get("KIT_API_KEY") and nl.get("segment_pt") and nl.get("segment_en")):
+        print(f"newsletter not configured (KIT_API_KEY and newsletter segments), skipping {[s for *_, s in new]}"); return
     if len(new) > MAX_PER_RUN:
         sys.exit(f"{len(new)} new posts at once ({[s for *_, s in new]}), above the limit of {MAX_PER_RUN}. "
                  "If that's intended, publish them one at a time or add the slugs to _data/newsletter_sent.yml.")
