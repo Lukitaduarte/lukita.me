@@ -81,6 +81,17 @@ final ai = await DecisionAI.local(); // reads assets/model/decision_ai.json
 
 Use it when the app has to **work offline from the very first launch** and package size isn't a problem. Dinah adds 165 MB to the app.
 
+Just don't forget to declare the model's folders as assets in your app's `pubspec.yaml`. Flutter only ships what is declared, and a folder doesn't include its subfolders, so each one needs its own line:
+
+```yaml
+flutter:
+  assets:
+    - assets/model/        # decision_ai.json and tokenizer.json
+    - assets/model/onnx/   # the model file
+```
+
+Without it, the app builds fine and only breaks when it tries to load the model, with an "Unable to load asset".
+
 **2. Downloaded from Hugging Face the first time:**
 
 ```dart

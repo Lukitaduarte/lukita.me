@@ -79,6 +79,17 @@ final ai = await DecisionAI.local(); // lê assets/model/decision_ai.json
 
 Use quando o app precisa funcionar **offline desde a primeira abertura** e o tamanho do pacote não é problema. A Dinah soma 165 MB ao app.
 
+Só não esqueça de declarar as pastas do modelo como assets no `pubspec.yaml` do seu app. O Flutter só empacota o que está declarado, e uma pasta não inclui as subpastas, então cada uma precisa da própria linha:
+
+```yaml
+flutter:
+  assets:
+    - assets/model/        # decision_ai.json e tokenizer.json
+    - assets/model/onnx/   # o arquivo do modelo
+```
+
+Sem isso, o app compila normalmente e só quebra quando tenta carregar o modelo, com um "Unable to load asset".
+
 **2. Baixado do Hugging Face na primeira vez:**
 
 ```dart
