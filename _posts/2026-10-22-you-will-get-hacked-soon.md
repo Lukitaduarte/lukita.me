@@ -6,7 +6,7 @@ categories: [Security, Engineering]
 tags: [security, incident, post-mortem, php, railway, appsflyer, supply-chain, chaos-engineering]
 lang: en
 image:
-  path: /assets/img/posts/seguranca/top-mitigated-paths.png
+  path: /assets/img/posts/seguranca/cover.png
   alt: 'The "Top mitigated paths" dashboard of a newly launched service, with the most blocked paths: the root, /.env, /.git/config, /.env.prod and /.env.local'
 ---
 

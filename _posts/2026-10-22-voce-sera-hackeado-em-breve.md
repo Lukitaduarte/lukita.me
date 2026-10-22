@@ -6,7 +6,7 @@ categories: [Segurança, Engenharia]
 tags: [segurança, incidente, post-mortem, php, railway, appsflyer, supply-chain, chaos-engineering]
 lang: pt-BR
 image:
-  path: /assets/img/posts/seguranca/top-mitigated-paths.png
+  path: /assets/img/posts/seguranca/cover.png
   alt: 'Painel "Top mitigated paths" de um serviço recém-lançado, com os caminhos mais bloqueados: a raiz, /.env, /.git/config, /.env.prod e /.env.local'
 ---
 
