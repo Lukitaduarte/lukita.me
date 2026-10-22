@@ -1,6 +1,6 @@
 ---
 title: "Você será hackeado em breve, e isso é um fato"
-description: Sabendo disso, o quanto você está preparado para o minuto seguinte em que isso ocorrer? O guia definitivo para todo engenheiro de software.
+description: O quanto você está preparado para o minuto seguinte em que isso ocorrer? O guia definitivo para todo engenheiro de software.
 date: 2026-10-22 00:16:28 -0300
 categories: [Segurança, Engenharia]
 tags: [segurança, incidente, post-mortem, php, railway, appsflyer, supply-chain, chaos-engineering]
@@ -12,7 +12,7 @@ image:
 
 [Read in English](/posts/you-will-get-hacked-soon/){: .lang-link}
 
-**Sabendo disso, o quanto você está preparado para o minuto seguinte em que isso ocorrer? O guia definitivo para todo engenheiro de software.**
+**O quanto você está preparado para o minuto seguinte em que isso ocorrer? O guia definitivo para todo engenheiro de software.**
 
 Não é segredo para nenhum engenheiro que a gente anda comendo incidente de segurança no café da manhã, um dia depois do outro. Hoje mesmo, enquanto escrevo, três notícias estão abertas nas minhas abas, e as três dizem a mesma coisa de jeitos diferentes. Vou te contar as três e depois te entregar uma receita de bolo, de alguém que já viveu isso na prática algumas vezes na vida e que, pelo que parece, vai viver muito mais daqui em diante.
 
@@ -157,7 +157,7 @@ Se tudo que fica no ar é lido na hora, a primeira defesa é não deixar no ar o
 
 Vou dar a minha opinião, e ela é só isso, uma opinião de quem vê o dia a dia e não tem um estudo para citar. As ferramentas tradicionais (scan de código, **SAST**, **DAST**, análise de dependências) foram desenhadas para um mundo em que o atacante era lento e o código também. Nenhum dos dois é mais verdade. Os modelos de fronteira exploram hipóteses que ninguém tinha tempo de explorar, e do outro lado nós geramos feature e código com as mesmas IAs, numa velocidade enorme, entendendo cada vez menos do que foi feito. Quanto mais código que ninguém leu em produção, maior a superfície, e menos tempo para quem defende.
 
-Tudo isso leva a um só caminho, e é o que dá título a este texto: **você será hackeado em breve, e isso é um fato.** Sabendo disso, a pergunta útil deixa de ser "como eu evito?" e passa a ser "o que acontece nos 60 minutos seguintes?". Separei a receita em três momentos: antes, durante e depois.
+Tudo isso leva a um só caminho, e é o que dá título a este texto: **você será hackeado em breve, e isso é um fato.** A pergunta útil deixa de ser "como eu evito?" e passa a ser "o que acontece nos 60 minutos seguintes?". Separei a receita em três momentos: antes, durante e depois.
 
 ## 1. Antes da produção
 

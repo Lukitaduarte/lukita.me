@@ -1,6 +1,6 @@
 ---
 title: "You will get hacked soon, and that is a fact"
-description: Knowing that, how prepared are you for the minute right after it happens? The definitive guide for every software engineer.
+description: How prepared are you for the minute right after it happens? The definitive guide for every software engineer.
 date: 2026-10-22 00:16:28 -0300
 categories: [Security, Engineering]
 tags: [security, incident, post-mortem, php, railway, appsflyer, supply-chain, chaos-engineering]
@@ -14,7 +14,7 @@ image:
 
 *This article is an English translation of the original article written in Portuguese, you can find it [here](/posts/voce-sera-hackeado-em-breve/).*
 
-**Knowing that, how prepared are you for the minute right after it happens? The definitive guide for every software engineer.**
+**How prepared are you for the minute right after it happens? The definitive guide for every software engineer.**
 
 It is no secret to any engineer that we have been eating security incidents for breakfast, one day after the other. Today, as I write this, I have three news stories open in my tabs, and all three say the same thing in different ways. I will tell you about the three and then hand you a recipe, from someone who has lived through this in practice a few times in life and who, by the look of it, is going to live through it a lot more from now on.
 
@@ -159,7 +159,7 @@ If everything that goes live is read right away, the first defense is not leavin
 
 I will give you my opinion, and that is all it is, an opinion from someone who sees the day to day and has no study to cite. Traditional tools (code scanning, **SAST**, **DAST**, dependency analysis) were designed for a world where the attacker was slow and so was the code. Neither is true anymore. Frontier models explore hypotheses nobody had time to explore, and on the other side we generate features and code with the same AIs, at enormous speed, understanding less and less of what was done. The more code nobody has read in production, the bigger the surface, and the less time for the defenders.
 
-All of this leads to one path, and it is what gives this text its title: **you will get hacked soon, and that is a fact.** Knowing that, the useful question stops being "how do I avoid it?" and becomes "what happens in the next 60 minutes?". I split the recipe into three moments: before, during and after.
+All of this leads to one path, and it is what gives this text its title: **you will get hacked soon, and that is a fact.** The useful question stops being "how do I avoid it?" and becomes "what happens in the next 60 minutes?". I split the recipe into three moments: before, during and after.
 
 ## 1. Before production
 
