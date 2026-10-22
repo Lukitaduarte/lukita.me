@@ -328,3 +328,19 @@ table.full-width-table { display: table; }
   button { padding: .5rem 1rem; border: 0; border-radius: 8px; background: var(--link-color, #18181b); color: #fff; font-weight: 600; }
   small { color: var(--text-muted-color, #71717a); }
 }
+
+/* excerpt that expands to the whole content (<div class="peek"> around prose, with <details> for the hidden part) */
+.peek {
+  margin: 1.5rem 0; border: 1px solid var(--main-border-color); border-radius: 10px; overflow: hidden;
+  .peek-title { padding: .5rem .9rem; font-size: .8rem; color: var(--text-muted-color); border-bottom: 1px solid var(--main-border-color); }
+  .peek-text { padding: .9rem 1rem 0; }
+  div.highlighter-rouge { margin: 0; border-radius: 0; }
+  details > summary {
+    cursor: pointer; padding: .6rem .9rem; font-size: .85rem; font-weight: 600; list-style: none;
+    border-top: 1px solid var(--main-border-color); color: var(--heading-color);
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '\25B8\00a0'; }
+  details[open] > summary::before { content: '\25BE\00a0'; }
+  details > .peek-text { padding-top: .5rem; border-top: 1px solid var(--main-border-color); }
+}
